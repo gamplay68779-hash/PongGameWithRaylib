@@ -10,7 +10,7 @@ class Ball
 public:
     Vector2 position;
     float ballSize = 7;
-    Vector2 direction = { 1, -1 };
+    Vector2 direction = { 1, 0 };
     float speed = 250.f;
 
     Ball(Vector2 pos)
@@ -22,6 +22,13 @@ public:
     {
         DrawCircle(position.x, position.y, ballSize, WHITE);
     }
+
+    void reset(float dirX)
+    {
+        position = { 900 / 2.0f , 480 / 2.0f };
+        speed = 250.f;
+        direction = { dirX, 0.0f };
+    }
 };
 
 class PongWall
@@ -30,6 +37,7 @@ public:
     int Height = 70;
     int width = 15;
     Vector2 position;
+    int score = 0;
 
     PongWall(Vector2 pos)
     {
@@ -83,7 +91,7 @@ public:
 
     Ball ball = Ball({ 900 / 2.0f , 480 / 2.0f });
 
-    float speed = 300.f;
+    float speed = 250.f;
 
     Game() {}
 
@@ -164,10 +172,23 @@ int main()
             HandlePaddleCollision(game.ball, game.wallTwo, false);
         }
 
+        if (game.ball.position.x + game.ball.ballSize < 0)
+        {
+            game.wallOne.score += 1;
+            game.ball.reset(1.0f);
+        }
+        else if (game.ball.position.x - game.ball.ballSize > screenWidth)
+        {
+            game.wallTwo.score += 1;
+            game.ball.reset(-1.0f);
+        }
+
         // Draw Frame
         BeginDrawing();
         ClearBackground(BLACK);
         game.Update();
+        DrawText(TextFormat("%d",game.wallOne.score), screenHeight / 3, 20, 40, WHITE);
+        DrawText(TextFormat("%d" ,game.wallTwo.score), (screenHeight / 2)*3, 20, 40, WHITE);
         EndDrawing();
     }
 
