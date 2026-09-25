@@ -1,0 +1,4 @@
+# Visual Studio workspace and user files
+.vs/
+build/
+*.slnx.user
